@@ -15,10 +15,15 @@
 #import "mCatalogueCartVC.h"
 #import "mCatalogueCartAlertView.h"
 
-@implementation mCatalogueBaseVC
+@interface mCatalogueBaseVC()
 {
   mCatalogueSearchBarViewAppearance searchBarAppearance;
 }
+
+@end
+
+
+@implementation mCatalogueBaseVC
 
 -(instancetype)initWithNavBarAppearance:(mCatalogueSearchBarViewAppearance)appearance
 {
@@ -276,6 +281,19 @@
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
   return UIInterfaceOrientationPortrait;
+}
+
+#pragma mark - IBSideBar
+-(NSArray *)actionsForIBSideBar
+{
+  self.customNavBar.hamburgerHidden = NO;
+  
+  if([mCatalogueParameters sharedParameters].cartEnabled)
+  {
+    return @[self.customNavBar.cartButton.sideBarModuleAction];
+  }
+  
+  return nil;
 }
 
 @end

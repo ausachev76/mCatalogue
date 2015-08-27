@@ -332,4 +332,12 @@
   }
 }
 
+#pragma mark - IBSideBar
+-(NSArray *)actionsForIBSideBar
+{
+  self.customNavBar.hamburgerHidden = NO;
+  
+  return nil;
+}
+
 @end

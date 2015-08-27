@@ -292,6 +292,8 @@ homepageButton = _homepageButton;
   
   self.summaryView.frame = summaryViewFrame;
   [self.summaryView layoutSubviews];
+  
+  self.customNavBar.cartButtonHidden = ![mCatalogueParameters sharedParameters].cartEnabled;
 }
 
 -(void)mCatalogueSearchViewLeftButtonPressed

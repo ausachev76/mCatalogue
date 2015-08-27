@@ -75,6 +75,13 @@ NSString *const mCatalogueCartButtonCartCountNotification = @"mCatalogueCartButt
 
 @end
 
+@interface mCatalogueCartButton()
+{
+  IBSideBarModuleAction *_sideBarModuleAction;
+}
+
+@end
+
 @implementation mCatalogueCartButton
 @synthesize countLabel = _countLabel,
                  count = _count;
@@ -142,7 +149,13 @@ NSString *const mCatalogueCartButtonCartCountNotification = @"mCatalogueCartButt
   if ( _count != count_ )
   {
     _count = count_;
+    
     self.countLabel.text = _count ? [[NSNumber numberWithInteger:_count] stringValue] : @"";
+    
+    if(_sideBarModuleAction){
+      [self updateCartActionLabel];
+    }
+    
     [self setNeedsLayout];
   }
 }
@@ -182,7 +195,46 @@ NSString *const mCatalogueCartButtonCartCountNotification = @"mCatalogueCartButt
 {
   id obj = [notification object];
   if ( [obj isKindOfClass:[NSNumber class]] )
+  {
     self.count = [((NSNumber *)[notification object]) integerValue];
+  }
+}
+
+#pragma mark - IBSideBar
+-(IBSideBarModuleAction *)sideBarModuleAction
+{
+  if(!_sideBarModuleAction)
+  {
+    _sideBarModuleAction = [[self class] sharedAction];
+    [self updateCartActionLabel];
+  }
+  
+  return _sideBarModuleAction;
+}
+
+-(void)updateCartActionLabel
+{
+  NSMutableString *label = [NSMutableString stringWithString:NSBundleLocalizedString(@"mCatalogue_SideBarCartActionLabel", @"Cart")];
+  
+  if(_count)
+  {
+    [label appendFormat:@" (%lu)", (long unsigned) _count];
+  }
+  
+  self.sideBarModuleAction.label = label;
+}
+
++(IBSideBarModuleAction *)sharedAction
+{
+  static IBSideBarModuleAction *sharedAction = nil;
+  
+  static dispatch_once_t onceToken = 0;
+  
+  dispatch_once(&onceToken, ^{
+    sharedAction = [[IBSideBarModuleAction alloc] init];
+  });
+  
+  return sharedAction;
 }
 
 @end
