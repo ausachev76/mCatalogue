@@ -190,12 +190,10 @@ typedef struct{
   
   [params_ setObject:catalogueParsedParameters forKey:kCatalogueParsedParametersKey];
   
-  if([CIphoneMainViewController appConfigWasReloaded]){
-    BOOL dbIsReady = [self prepareDatabaseAtPath:[mCatalogueParameters dbFilePath:[params_ objectForKey:@"module_id"]]];
+  BOOL dbIsReady = [self prepareDatabaseAtPath:[mCatalogueParameters dbFilePath:[params_ objectForKey:@"module_id"]]];
     
-    if(dbIsReady){
-      [self persistCatalogueContents:element];
-    }
+  if(dbIsReady){
+    [self persistCatalogueContents:element];
   }
 }
 
