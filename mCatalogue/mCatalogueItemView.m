@@ -10,14 +10,14 @@
  ****************************************************************************/
 
 #import "mCatalogueItemView.h"
+#import "mCatalogueParameters.h"
 #import "NSString+size.h"
+#import "UIColor+RGB.h"
 #import <QuartzCore/QuartzCore.h>
 
 //Style-agnostic values
-#define kCatalogueItemCellBorderColor [[UIColor blackColor] colorWithAlphaComponent:0.1f]
 #define kCatalogueItemCellBorderWidth 0.5f
 #define kDelimeterWidth kCatalogueItemCellBorderWidth
-#define kDelimeterColor kCatalogueItemCellBorderColor
 #define kCatalogueItemCellCornerRadius 6.0f
 
 #define kTextLabelTextColor [[UIColor blackColor] colorWithAlphaComponent:0.9f]
@@ -117,7 +117,9 @@ static UIImage *itemImagePlaceholder = nil;
   self.clipsToBounds = YES;
   
   self.layer.cornerRadius = kCatalogueItemCellCornerRadius;
-  self.layer.borderColor = [kCatalogueItemCellBorderColor CGColor];
+  
+  UIColor *bgColor = [mCatalogueParameters sharedParameters].backgroundColor;
+  self.layer.borderColor = [bgColor blend:[[UIColor blackColor] colorWithAlphaComponent:0.1f]].CGColor;
   self.layer.borderWidth = kCatalogueItemCellBorderWidth;
   self.backgroundColor = [UIColor whiteColor];
   
@@ -310,13 +312,7 @@ static UIImage *itemImagePlaceholder = nil;
 {
   self.itemImageView = [[[UIImageView alloc] init] autorelease];
   
-  if(self.style == mCatalogueEntryViewStyleGrid){
-    self.itemImageView.contentMode = UIViewContentModeScaleAspectFit;
-  } else {
-    //shoes went down and left too much white space
-    self.itemImageView.contentMode = UIViewContentModeScaleAspectFill;
-  }
-  
+  self.itemImageView.contentMode = UIViewContentModeScaleAspectFill;
   self.itemImageView.clipsToBounds = YES;
   self.itemImageView.alpha = 0.0f;
   [self addSubview:self.itemImageView];
@@ -325,7 +321,7 @@ static UIImage *itemImagePlaceholder = nil;
 -(void)placeDelimiter
 {
   self.delimiterView = [[[UIView alloc] init] autorelease];
-  self.delimiterView.backgroundColor = kDelimeterColor;
+  self.delimiterView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.1f];
   [self addSubview:self.delimiterView];
 }
 

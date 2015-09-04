@@ -753,8 +753,11 @@ typedef struct{
   else
     _catalogueParams.backgroundColor  = [UIColor lightGrayColor];
   
-  if([color1String isEqualToString:@"#ffffff"] || [color1String isEqualToString:@"#fff"] || /*Quite impossible, but give it a chance*/ [color1String isEqualToString:@"white"]){
+  if([color1String isEqualToString:@"#ffffff"] || [color1String isEqualToString:@"#fff"] || /*Quite impossible, but give it a chance*/ [color1String isEqualToString:@"white"]) {
     _catalogueParams.isWhiteBackground = YES;
+  }
+  else {
+    _catalogueParams.isWhiteBackground = NO;
   }
   
   if ([catalogueParsedParameters objectForKey:@"color2"])
@@ -1061,6 +1064,8 @@ typedef struct{
       
       if(_catalogueParams.isWhiteBackground){
         ((mCatalogueCategoryView *)catalogueEntryView).imagePlaceholderMaskColor = kCatalogueCategoryDarkMaskColor;
+      } else {
+        ((mCatalogueCategoryView *)catalogueEntryView).imagePlaceholderMaskColor = catalogueEntryView.backgroundColor;
       }
     }
     else {
