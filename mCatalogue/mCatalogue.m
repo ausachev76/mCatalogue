@@ -503,6 +503,7 @@ typedef struct{
   NSArray *itemTagList = @[@"itemname",
                            @"itemdescription",
                            @"itemprice",
+                           @"itemsku",
                            @"image",
                            @"image_res",
                            @"thumbnail",
@@ -513,7 +514,7 @@ typedef struct{
   NSMutableArray *items = [[NSMutableArray alloc] init];
   
   while (itemElement)
-    {
+  {
     NSMutableDictionary *itemElementMap = [[NSMutableDictionary alloc] init];
     
     // processing attributes for <item>:
@@ -548,7 +549,7 @@ typedef struct{
       
       items = [[NSMutableArray alloc] init];
     }
-    }
+  }
   
   if([items count]){
     persistenceSucceeded &= [dbManager insertProducts:items];

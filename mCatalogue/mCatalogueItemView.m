@@ -81,6 +81,7 @@ static UIImage *itemImagePlaceholder = nil;
 @interface mCatalogueItemView()
 
 @property (nonatomic, strong) UILabel *itemNameLabel;
+@property (nonatomic, strong) UILabel *itemSKULabel;
 @property (nonatomic, strong) UILabel *itemDescriptionLabel;
 @property (nonatomic, strong) UILabel *itemPriceLabel;
 
@@ -124,7 +125,7 @@ static UIImage *itemImagePlaceholder = nil;
   self.backgroundColor = [UIColor whiteColor];
   
   [self placeItemNameLabel];
-  
+  [self placeItemSKULabel];
   [self placeItemDescriptionLabel];
   
   [self placeItemPriceLabel];
@@ -219,6 +220,18 @@ static UIImage *itemImagePlaceholder = nil;
   }
   
   [self addSubview:self.itemNameLabel];
+}
+
+-(void)placeItemSKULabel
+{
+  self.itemSKULabel = [[[UILabel alloc] init] autorelease];
+  self.itemSKULabel.backgroundColor = self.backgroundColor;
+  self.itemSKULabel.textColor = kItemDescriptionLabelTextColor;
+  self.itemSKULabel.text = @"";
+  self.itemSKULabel.adjustsFontSizeToFitWidth = NO;
+  self.itemSKULabel.font = [UIFont systemFontOfSize:kItemDescriptionLabelFontSize_Row];
+  
+  [self addSubview:self.itemSKULabel];
 }
 
 -(void)placeItemDescriptionLabel
@@ -351,9 +364,11 @@ static UIImage *itemImagePlaceholder = nil;
     self.itemDescriptionLabel.frame = itemDescriptionLabelFrame;
     
   } else if (self.style == mCatalogueEntryViewStyleRow){
+    CGFloat lastElemMaxYCoord = 0;
+    
     CGRect itemNameLabelFrame = (CGRect){
       kImageViewWidth_Row + kTextBlockMarginLeft_Row,
-      kTextBlockMarginTop_Row,
+      lastElemMaxYCoord + kTextBlockMarginTop_Row,
       kTextBlockWidth_Row,
       //2 lines of text max
       kItemNameLabelMaxLines_Row * self.itemNameLabel.font.lineHeight
@@ -365,10 +380,30 @@ static UIImage *itemImagePlaceholder = nil;
     
     itemNameLabelFrame.size.height = ceilf(itemNameLabelSize.height);
     self.itemNameLabel.frame = itemNameLabelFrame;
+    lastElemMaxYCoord = CGRectGetMaxY(itemNameLabelFrame);
+    
+    if (self.catalogueItem.sku && self.catalogueItem.sku.length)
+    {
+      CGRect itemSkuLabelFrame = (CGRect){
+        kImageViewWidth_Row + kTextBlockMarginLeft_Row,
+        lastElemMaxYCoord + kTextBlockMarginTop_Row,
+        kTextBlockWidth_Row,
+        CGFLOAT_MAX
+      };
+      
+      CGSize itemSKULabelSize = [self.catalogueItem.sku sizeForFont:self.itemSKULabel.font
+                                                            limitSize:itemSkuLabelFrame.size
+                                                      nslineBreakMode:self.itemSKULabel.lineBreakMode];
+      
+      itemSkuLabelFrame.size.height = ceilf(itemSKULabelSize.height);
+      self.itemSKULabel.frame = itemSkuLabelFrame;
+      lastElemMaxYCoord = CGRectGetMaxY(itemSkuLabelFrame);
+    }
+    
     
     CGRect itemDescriptionLabelFrame = (CGRect){
       kImageViewWidth_Row + kTextBlockMarginLeft_Row,
-      CGRectGetMaxY(self.itemNameLabel.frame) + kSpaceBetweenNameAndDescription_Row,
+      lastElemMaxYCoord + kSpaceBetweenNameAndDescription_Row,
       kTextBlockWidth_Row,
       //2 lines of text max
       kItemDescriptionLabelMaxLines_Row * self.itemDescriptionLabel.font.lineHeight
@@ -380,9 +415,10 @@ static UIImage *itemImagePlaceholder = nil;
     
     itemDescriptionLabelFrame.size.height = ceilf(itemNameDescriptionSize.height);
     self.itemDescriptionLabel.frame = itemDescriptionLabelFrame;
+    lastElemMaxYCoord = CGRectGetMaxY(itemDescriptionLabelFrame);
     
     CGRect priceLabelFrame = (CGRect){kImageViewWidth_Row + kTextBlockMarginLeft_Row,
-      CGRectGetMaxY(self.itemDescriptionLabel.frame) + kSpaceBetweenNameAndDescription_Row,
+      lastElemMaxYCoord + kSpaceBetweenNameAndDescription_Row,
       kTextBlockWidth_Row,
       //1 line of text max
       ceilf(self.itemPriceLabel.font.lineHeight)
@@ -454,6 +490,16 @@ static UIImage *itemImagePlaceholder = nil;
     _catalogueItem = catalogueItem;
     
     self.itemNameLabel.text = self.catalogueItem.name;
+    
+    if (self.catalogueItem.sku && self.catalogueItem.sku.length) {
+      self.itemSKULabel.text = [NSString stringWithFormat:@"%@: %@",
+                                NSBundleLocalizedString(@"mCatalogue_SKU", @"SKU"),
+                                self.catalogueItem.sku];
+    }
+    else {
+      self.itemSKULabel.text = @"";
+    }
+    
     self.itemDescriptionLabel.text = self.catalogueItem.descriptionPlainText;
     
     if(self.catalogueItem.price.doubleValue > 0.0f){
@@ -562,6 +608,7 @@ static UIImage *itemImagePlaceholder = nil;
   }
   
   self.itemNameLabel = nil;
+  self.itemSKULabel = nil;
   self.itemDescriptionLabel = nil;
   
   self.itemImageView = nil;

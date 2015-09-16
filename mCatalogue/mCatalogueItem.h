@@ -51,6 +51,11 @@
 @property(nonatomic, strong) NSString *thumbnailUrlRes;
 
 /**
+ * Item sku
+ */
+@property(nonatomic, strong) NSString *sku;
+
+/**
  * Item price
  */
 @property(nonatomic, strong) NSDecimalNumber *price;
