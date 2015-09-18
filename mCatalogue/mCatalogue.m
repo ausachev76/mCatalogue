@@ -190,12 +190,10 @@ typedef struct{
   
   [params_ setObject:catalogueParsedParameters forKey:kCatalogueParsedParametersKey];
   
-  if([CIphoneMainViewController appConfigWasReloaded]){
-    BOOL dbIsReady = [self prepareDatabaseAtPath:[mCatalogueParameters dbFilePath:[params_ objectForKey:@"module_id"]]];
+  BOOL dbIsReady = [self prepareDatabaseAtPath:[mCatalogueParameters dbFilePath:[params_ objectForKey:@"module_id"]]];
     
-    if(dbIsReady){
-      [self persistCatalogueContents:element];
-    }
+  if(dbIsReady){
+    [self persistCatalogueContents:element];
   }
 }
 
@@ -505,6 +503,7 @@ typedef struct{
   NSArray *itemTagList = @[@"itemname",
                            @"itemdescription",
                            @"itemprice",
+                           @"itemsku",
                            @"image",
                            @"image_res",
                            @"thumbnail",
@@ -515,7 +514,7 @@ typedef struct{
   NSMutableArray *items = [[NSMutableArray alloc] init];
   
   while (itemElement)
-    {
+  {
     NSMutableDictionary *itemElementMap = [[NSMutableDictionary alloc] init];
     
     // processing attributes for <item>:
@@ -550,7 +549,7 @@ typedef struct{
       
       items = [[NSMutableArray alloc] init];
     }
-    }
+  }
   
   if([items count]){
     persistenceSucceeded &= [dbManager insertProducts:items];
@@ -755,8 +754,11 @@ typedef struct{
   else
     _catalogueParams.backgroundColor  = [UIColor lightGrayColor];
   
-  if([color1String isEqualToString:@"#ffffff"] || [color1String isEqualToString:@"#fff"] || /*Quite impossible, but give it a chance*/ [color1String isEqualToString:@"white"]){
+  if([color1String isEqualToString:@"#ffffff"] || [color1String isEqualToString:@"#fff"] || /*Quite impossible, but give it a chance*/ [color1String isEqualToString:@"white"]) {
     _catalogueParams.isWhiteBackground = YES;
+  }
+  else {
+    _catalogueParams.isWhiteBackground = NO;
   }
   
   if ([catalogueParsedParameters objectForKey:@"color2"])
@@ -1063,6 +1065,8 @@ typedef struct{
       
       if(_catalogueParams.isWhiteBackground){
         ((mCatalogueCategoryView *)catalogueEntryView).imagePlaceholderMaskColor = kCatalogueCategoryDarkMaskColor;
+      } else {
+        ((mCatalogueCategoryView *)catalogueEntryView).imagePlaceholderMaskColor = catalogueEntryView.backgroundColor;
       }
     }
     else {

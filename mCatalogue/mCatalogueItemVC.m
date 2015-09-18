@@ -37,8 +37,11 @@
 
 #import "mCatalogueThankYouPageVC.h"
 
+#import "phonecaller.h"
+
 
 #define kItemNameLabelMarginTop (10.0f - 3.0f)
+#define kItemSKULabelMarginTop (10.0f - 3.0f)
 #define kItemDescriptionWebViewMarginTop (12.0f - 4.0f)
 #define kPriceContainerSeparatorMarginTop 10.0f
 #define kSeparatorHeight 0.5f
@@ -47,6 +50,8 @@
 
 #define kItemNameLabelMarginRight 10.0f
 #define kItemNameLabelMarginLeft 14.0f
+#define kItemSKULabelMarginRight 10.0f
+#define kItemSKULabelMarginLeft 14.0f
 #define kItemDescriptionWebViewMarginLeft kItemNameLabelMarginLeft
 #define kItemDescriptionWebViewMarginRight kItemNameLabelMarginRight
 #define kPriceContainerMarginLeft kItemNameLabelMarginLeft
@@ -70,6 +75,9 @@
 
 #define kItemNameLabelFontSize 19.0f
 #define kItemNameLabelTextColor [[UIColor blackColor] colorWithAlphaComponent:0.9f]
+
+#define kItemSKULabelFontSize 12.0f
+#define kItemSKULabelTextColor [[UIColor blackColor] colorWithAlphaComponent:0.6f]
 
 #define kLikesCountLabelFontSize 15.0f
 #define kLikesCountLabelTextColor [[UIColor blackColor] colorWithAlphaComponent:0.9f]
@@ -117,6 +125,7 @@
 @property (nonatomic, strong) UIView        *itemImageSeparatorView;
 
 @property (nonatomic, strong) UILabel       *itemNameLabel;
+@property (nonatomic, strong) UILabel       *itemSKULabel;
 @property (nonatomic, strong) UIWebView     *itemDescriptionWebView;
 
 @property (nonatomic, strong) UIView        *priceContainerSeparatorView;
@@ -204,6 +213,7 @@
   self.scrollView = nil;
   self.itemImageView = nil;
   self.itemNameLabel = nil;
+  self.itemSKULabel = nil;
   self.itemDescriptionWebView = nil;
   self.itemPriceLabel = nil;
   
@@ -320,6 +330,10 @@
   [self placeItemImageView];
   [self placeItemImageSeparatorView];
   [self placeItemNameLabel];
+  
+  if (self.catalogueItem.sku && self.catalogueItem.sku.length) {
+    [self placeItemSKULabel];
+  }
   [self placeItemDescriptionWebView];
   
   if(_catalogueParams.cartEnabled)
@@ -496,6 +510,36 @@
     [self.scrollView addSubview:self.itemNameLabel];
     
     _currentElementsYOffset = CGRectGetMaxY(self.itemNameLabel.frame);
+  }
+}
+
+- (void)placeItemSKULabel
+{
+  if (!_itemSKULabel)
+  {
+    self.itemSKULabel = [[[UILabel alloc] init] autorelease];
+    self.itemSKULabel.backgroundColor = [UIColor clearColor];
+    self.itemSKULabel.font = [UIFont systemFontOfSize:kItemSKULabelFontSize];
+    self.itemSKULabel.textColor = kItemSKULabelTextColor;
+    self.itemSKULabel.text = [NSString stringWithFormat:@"%@: %@", NSBundleLocalizedString(@"mCatalogue_SKU", @"SKU"), self.catalogueItem.sku];
+    
+    CGRect itemSKULabelFrame = (CGRect){
+      kItemSKULabelMarginLeft,
+      _currentElementsYOffset + kItemSKULabelMarginTop,
+      CGFLOAT_MAX,
+      CGFLOAT_MAX
+    };
+    
+    CGSize itemSKULabelSize = [self.itemSKULabel.text sizeForFont:self.itemSKULabel.font
+                                                          limitSize:itemSKULabelFrame.size
+                                                      lineBreakMode:self.itemSKULabel.lineBreakMode];
+    
+    itemSKULabelFrame.size = itemSKULabelSize;
+    
+    self.itemSKULabel.frame = itemSKULabelFrame;
+    [self.scrollView addSubview:self.itemSKULabel];
+    
+    _currentElementsYOffset = CGRectGetMaxY(self.itemSKULabel.frame);
   }
 }
 
@@ -858,6 +902,7 @@
   
   [self repositionView:self.itemImageSeparatorView offset:offset];
   [self repositionView:self.itemNameLabel offset:offset];
+   [self repositionView:self.itemSKULabel offset:offset];
   [self repositionView:self.itemDescriptionWebView offset:offset];
   [self repositionView:self.priceContainerSeparatorView offset:offset];
   [self repositionView:self.priceContainer offset:offset];
@@ -1411,6 +1456,12 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 {
   if(navigationType == UIWebViewNavigationTypeLinkClicked){
     
+    if ([request.URL.scheme isEqual:@"tel"]) {
+      TPhoneCaller *caller = [[[TPhoneCaller alloc] init] autorelease];
+      [caller callNumber:request.URL.host];
+      return true;
+    }
+
     shouldMakeStatusBarLight = NO;
     
     mExternalLinkWebViewController *descriptionLinkWebViewController = [[mExternalLinkWebViewController alloc] init];

@@ -81,11 +81,15 @@
                           forState:UIControlStateNormal];
   cell.deleteButton.titleLabel.font      = [UIFont systemFontOfSize:14.f];
   
-  cell.textLabel.textColor         = [[mCatalogueParameters sharedParameters] captionColor];
-  cell.textLabel.font              = [UIFont boldSystemFontOfSize:13.f];
-  cell.textLabel.backgroundColor   = [UIColor clearColor];
-  cell.textLabel.lineBreakMode     = NSLineBreakByTruncatingTail;
-  cell.textLabel.numberOfLines     = 0;
+  cell.textLabel.textColor              = [[mCatalogueParameters sharedParameters] captionColor];
+  cell.textLabel.font                   = [UIFont boldSystemFontOfSize:13.f];
+  cell.textLabel.backgroundColor        = [UIColor clearColor];
+  cell.textLabel.lineBreakMode          = NSLineBreakByTruncatingTail;
+  cell.textLabel.numberOfLines          = 0;
+  
+  cell.detailTextLabel.textColor        = [[UIColor blackColor] colorWithAlphaComponent:0.6f];
+  cell.detailTextLabel.font             = [UIFont systemFontOfSize:12.f];
+  cell.detailTextLabel.backgroundColor  = [UIColor whiteColor];
   
   cell.imageView.contentMode       = UIViewContentModeScaleAspectFit;
   cell.imageView.clipsToBounds     = YES;
@@ -119,6 +123,12 @@
 {
   self.item = item_;
   self.textLabel.text        = item_.item.name;
+  if (item_.item.sku && item_.item.sku.length) {
+    self.detailTextLabel.text = [NSString stringWithFormat:@"%@: %@", NSBundleLocalizedString(@"mCatalogue_SKU", @"SKU"), item_.item.sku];
+  } else {
+    self.detailTextLabel.text = @"";
+  }
+  
   self.amountField.text      = item_.countAsString;
   self.priceLabel.text       = item_.item.priceStr;
   
@@ -195,11 +205,24 @@
                                        labelHeight );
   }
   
+  BOOL sku = self.item.item.sku && self.item.item.sku.length;
+  
+  if (sku) {
+    CGSize expectedSize = [self.detailTextLabel.text sizeWithFont:self.detailTextLabel.font
+                                                constrainedToSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
+                                              lineBreakMode:self.detailTextLabel.lineBreakMode];
+    
+    self.detailTextLabel.frame = CGRectMake(CGRectGetMinX(infoFieldFrm),
+                                            CGRectGetMaxY(self.textLabel.frame) + kCellTextLabelBottomMargin,
+                                            expectedSize.width,
+                                            expectedSize.height );
+  }
+  
   {
     // price placed under title label
     // this field right limited with delete button
     self.priceLabel.frame = CGRectMake( CGRectGetMinX(infoFieldFrm),
-                                       CGRectGetMaxY(self.textLabel.frame) + kCellTextLabelBottomMargin,
+                                       CGRectGetMaxY(sku ? self.detailTextLabel.frame : self.textLabel.frame) + kCellTextLabelBottomMargin,
                                        CGRectGetMinX( self.deleteButton.frame ) - CGRectGetMinX( infoFieldFrm ),
                                        CGRectGetMaxY( infoFieldFrm ) - (CGRectGetMaxY( self.textLabel.frame ) + kCellTextLabelBottomMargin ));
   }
