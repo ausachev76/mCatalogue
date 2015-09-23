@@ -22,6 +22,7 @@
 
 #define mCatalogueItemNameKey @"itemname"
 #define mCatalogueItemDescriptionKey @"itemdescription"
+#define mCatalogueItemSKUKey @"itemsku"
 #define mCatalogueItemPriceKey @"itemprice"
 #define mCatalogueItemPriceStrKey @"itemprice_str"
 
@@ -60,6 +61,8 @@
     
     self.name = [itemDict objectForKey:mCatalogueItemNameKey];
     self.description = [itemDict objectForKey:mCatalogueItemDescriptionKey];
+    
+    self.sku = [itemDict objectForKey:mCatalogueItemSKUKey];
     
     self.descriptionPlainText = [self.description htmlToNewLinePreservingText];
     
