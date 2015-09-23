@@ -80,7 +80,7 @@
   internetReachable = _catalogueParams.isInternetReachable;
   
   self.customNavBar.cartButton.count = _catalogueParams.cart.totalCount;
-  self.customNavBar.cartButton.hidden = !_catalogueParams.cartEnabled;
+  self.customNavBar.cartButtonHidden = !_catalogueParams.cartEnabled;
   
   // before hiding / displaying tabBar we must remember its previous state
   self.tabBarIsHidden = [[self.tabBarController tabBar] isHidden];

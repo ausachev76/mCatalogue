@@ -31,7 +31,6 @@
 @property (nonatomic, retain) UILabel *foundApplicationsCountLabel;
 @property (nonatomic, retain) UIView *separator;
 
-@property (nonatomic, assign) UIView *rightMostView;
 @end
 
 @implementation mCatalogueSearchBarView
@@ -98,7 +97,6 @@
   _hamburgerView = nil;
   _foundApplicationsCountLabel = nil;
   _cartButton = nil;
-  _rightMostView = nil;
   
   _cartButtonHidden = YES;
   _hamburgerHidden = YES;
@@ -201,7 +199,7 @@
 {
   [self addSubview:self.hamburgerView];
   
-  self.hamburgerView.hidden = YES;
+  self.hamburgerView.hidden = _hamburgerHidden;
 }
 
 - (void) placeSearchIconImageView
@@ -231,6 +229,8 @@
 - (void) placeCartButton
 {
   [self addSubview:self.cartButton];
+  
+  self.cartButton.hidden = _cartButtonHidden;
 }
 
 -(mCatalogueCartButton *)cartButton
@@ -415,8 +415,11 @@
   
   self.titleLabel.hidden = YES;
   self.searchIconView.hidden = YES;
-  self.cartButton.hidden = YES;
-  self.hamburgerView.hidden = YES;
+
+  self.cartButton.alpha = 0.0f;
+  self.cartButton.enabled = NO;
+  self.hamburgerView.alpha = 0.0f;
+  self.hamburgerView.userInteractionEnabled = NO;
   
   self.cancelSearchLabel.alpha = 0.0f;
   self.cancelSearchLabel.hidden = NO;
@@ -450,12 +453,6 @@
   self.searchIconView.alpha = 0.0f;
   self.searchIconView.hidden = NO;
   
-  if(self.rightMostView != self.searchIconView)
-  {
-    //больше условий тут
-    self.rightMostView.hidden = NO;
-    self.rightMostView.alpha = 0.0f;
-  }
   
   switch(self.appearance){
     case mCatalogueSearchBarViewDefaultAppearance:
@@ -482,10 +479,11 @@
       self.titleLabel.alpha = 1.0f;
       self.searchIconView.alpha = 1.0f;
       
-      if(self.rightMostView != self.searchIconView)
-      {
-        self.rightMostView.alpha = 1.0f;
-      }
+      self.cartButton.alpha = 1.0f;
+      self.hamburgerView.alpha = 1.0f;
+      
+      self.cartButton.enabled = YES;
+      self.hamburgerView.userInteractionEnabled = YES;
       
       switch(self.appearance){
         case mCatalogueSearchBarViewDefaultAppearance:
@@ -579,48 +577,16 @@
   self.foundApplicationsCountLabel.frame = newFrame;
 }
 
--(UIView *)rightMostView
-{
-  if(self.cartButtonHidden)
-  {
-    if(self.hamburgerHidden)
-    {
-      _rightMostView = self.searchIconView;
-    } else {
-      _rightMostView = self.hamburgerView;
-    }
-  } else {
-    if(self.hamburgerHidden)
-    {
-      _rightMostView = self.cartButton;
-    } else {
-      _rightMostView = self.hamburgerView;
-    }
-  }
-  
-  return _rightMostView;
-}
 
 - (void)setCartButtonHidden:(BOOL)hidden
 {
-  if (_cartButtonHidden != hidden)
+  if ((_cartButtonHidden != hidden) &&  _hamburgerHidden)
   {
-    CGPoint searchIconViewCenter = self.searchIconView.center;
-    CGRect titleLabelFrame = self.titleLabel.frame;
+    if (!hidden && _hamburgerHidden)
+        [self moveSearchIcon:-kToolbarHeight];
     
-    if (hidden)
-    {
-      searchIconViewCenter.x += kToolbarHeight;
-      titleLabelFrame.size = CGSizeMake(titleLabelFrame.size.width + kToolbarHeight, titleLabelFrame.size.height);
-    }
-    else
-    {
-      searchIconViewCenter.x -= kToolbarHeight;
-      titleLabelFrame.size = CGSizeMake(titleLabelFrame.size.width - kToolbarHeight, titleLabelFrame.size.height);
-    }
-    
-    self.searchIconView.center = searchIconViewCenter;
-    self.titleLabel.frame = titleLabelFrame;
+    if (hidden && _hamburgerHidden)
+      [self moveSearchIcon:kToolbarHeight];
     
     self.cartButton.hidden = hidden;
     _cartButtonHidden = hidden;
@@ -631,25 +597,29 @@
 {
   if(_hamburgerHidden != hidden)
   {
-    self.rightMostView.hidden = !hidden;
+    if (!hidden && _cartButtonHidden)
+      [self moveSearchIcon:-kToolbarHeight];
     
-    [self makeRightMostViewUltimatelyHidden:!hidden];
+    if (hidden && _cartButtonHidden)
+      [self moveSearchIcon:kToolbarHeight];
     
+    if (!hidden) self.cartButton.hidden = YES;
+    
+    self.hamburgerView.hidden = hidden;
     _hamburgerHidden = hidden;
-    
-    self.rightMostView.hidden = hidden;
-    [self makeRightMostViewUltimatelyHidden:hidden];
   }
 }
 
--(void)makeRightMostViewUltimatelyHidden:(BOOL)hidden
+-(void)moveSearchIcon:(CGFloat)offset
 {
-  if(hidden)
-  {
-    [self.rightMostView removeFromSuperview];
-  } else {
-    [self addSubview:self.rightMostView];
-  }
+  CGPoint searchIconViewCenter = self.searchIconView.center;
+  CGRect titleLabelFrame = self.titleLabel.frame;
+  
+  searchIconViewCenter.x += offset;
+  titleLabelFrame.size = CGSizeMake(titleLabelFrame.size.width, titleLabelFrame.size.height);
+  
+  self.searchIconView.center = searchIconViewCenter;
+  self.titleLabel.frame = titleLabelFrame;
 }
 
 -(BOOL) cartButtonHidden

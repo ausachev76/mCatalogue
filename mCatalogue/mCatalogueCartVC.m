@@ -90,7 +90,7 @@
 {
   [super viewWillAppear:animated];
   self.customNavBar.title = NSBundleLocalizedString( @"mCatalogue_TITLE", nil );
-  self.customNavBar.cartButton.hidden = YES;
+  self.customNavBar.cartButtonHidden = YES;
   
   [self update];
 }
