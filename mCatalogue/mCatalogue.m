@@ -50,6 +50,8 @@
 #import "IBPayments/IBPPayPalManager.h"
 #import "iphmainviewcontroller.h"
 
+#import "IBSideBar/IBSideBarModuleAction.h"
+
 /*
  * Beware of big xml configs (several Mbs) causing app crashes.
  * So parse xml with categories and and flush its contents to db.
@@ -918,6 +920,9 @@ typedef struct{
   }
   
   self.customNavBar.cartButtonHidden = ![mCatalogueParameters sharedParameters].cartEnabled;
+  
+  self.customNavBar.cartButton.sideBarModuleAction.target = self;
+  self.customNavBar.cartButton.sideBarModuleAction.selector = @selector(gotoCart);
   
   self.view.backgroundColor = _catalogueParams.backgroundColor;
 

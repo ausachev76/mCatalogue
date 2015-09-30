@@ -90,7 +90,7 @@
 {
   [super viewWillAppear:animated];
   self.customNavBar.title = NSBundleLocalizedString( @"mCatalogue_TITLE", nil );
-  self.customNavBar.cartButton.hidden = YES;
+  self.customNavBar.cartButtonHidden = YES;
   
   [self update];
 }
@@ -330,6 +330,14 @@
     UITableViewCell *cell = [[self.tableView visibleCells] lastObject];
     [self didDeleteCell:cell];
   }
+}
+
+#pragma mark - IBSideBar
+-(NSArray *)actionsForIBSideBar
+{
+  self.customNavBar.hamburgerHidden = NO;
+  
+  return nil;
 }
 
 @end

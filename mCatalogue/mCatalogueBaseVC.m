@@ -15,10 +15,15 @@
 #import "mCatalogueCartVC.h"
 #import "mCatalogueCartAlertView.h"
 
-@implementation mCatalogueBaseVC
+@interface mCatalogueBaseVC()
 {
   mCatalogueSearchBarViewAppearance searchBarAppearance;
 }
+
+@end
+
+
+@implementation mCatalogueBaseVC
 
 -(instancetype)initWithNavBarAppearance:(mCatalogueSearchBarViewAppearance)appearance
 {
@@ -75,7 +80,7 @@
   internetReachable = _catalogueParams.isInternetReachable;
   
   self.customNavBar.cartButton.count = _catalogueParams.cart.totalCount;
-  self.customNavBar.cartButton.hidden = !_catalogueParams.cartEnabled;
+  self.customNavBar.cartButtonHidden = !_catalogueParams.cartEnabled;
   
   // before hiding / displaying tabBar we must remember its previous state
   self.tabBarIsHidden = [[self.tabBarController tabBar] isHidden];
@@ -276,6 +281,19 @@
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
   return UIInterfaceOrientationPortrait;
+}
+
+#pragma mark - IBSideBar
+-(NSArray *)actionsForIBSideBar
+{
+  self.customNavBar.hamburgerHidden = NO;
+  
+  if([mCatalogueParameters sharedParameters].cartEnabled)
+  {
+    return @[self.customNavBar.cartButton.sideBarModuleAction];
+  }
+  
+  return nil;
 }
 
 @end

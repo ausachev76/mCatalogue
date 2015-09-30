@@ -94,8 +94,10 @@ delegate = _delegate;
   element_.delegate = nil;
   
   if ( [self.delegate respondsToSelector:@selector(catalogueCart:didDeleteItem:)] )
+  {
     [self.delegate catalogueCart:self
                      didDeleteItem:element_];
+  }
  
   [[mCatalogueParameters sharedParameters].dbManager deleteCartItems:@[element_]];
   [self.cartItems removeObject:element_];
@@ -120,6 +122,8 @@ delegate = _delegate;
     }
     
     [self.cartItems removeObjectAtIndex:index_];
+    
+    [self notifyTotalCountChanged];
   }
 }
 
@@ -147,6 +151,8 @@ delegate = _delegate;
 {
   mCatalogueCartItem *item = [[[mCatalogueCartItem alloc] initWithCatalogueItem:product_ count:quantity_] autorelease];
   [self addCartItems:@[item]];
+  
+  [self notifyTotalCountChanged];
 }
 
 - (void)addCartItems:(NSArray *)cartItems

@@ -273,6 +273,8 @@
    object:nil];
   
   [self loadLikesCount];
+  
+  self.customNavBar.cartButtonHidden = ![mCatalogueParameters sharedParameters].cartEnabled;
 }
 
 - (void)viewWillAppear:(BOOL)animated
