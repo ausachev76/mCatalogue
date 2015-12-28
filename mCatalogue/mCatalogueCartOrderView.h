@@ -29,6 +29,11 @@
 @property(nonatomic, readonly) UILabel  *priceLabel;
 
 /**
+ *  Price label view
+ */
+@property(nonatomic, strong) UIWebView  *descriptionWebView;
+
+/**
  *  Header horizontal separator color
  */
 @property(nonatomic, strong  ) UIColor  *separatorColor;

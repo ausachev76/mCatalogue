@@ -39,6 +39,8 @@
 
 #import "phonecaller.h"
 
+#import "mCatalogueTextField.h"
+
 
 #define kItemNameLabelMarginTop (10.0f - 3.0f)
 #define kItemSKULabelMarginTop (10.0f - 3.0f)
@@ -138,6 +140,11 @@
 @property (nonatomic, strong) UIButton      *likeButton;
 @property (nonatomic, strong) UIButton      *buyNowOrAddToCartButton;
 
+@property (nonatomic, strong) UIPageControl *pageControl;
+
+
+@property (nonatomic, strong) mCatalogueTextField *itemsQuantity;
+
 @property (nonatomic, strong) IBPPayPalManager      *payPalManager;
 
 @property (nonatomic, strong) mCatalogueThankYouPageVC *thankYouPage;
@@ -155,7 +162,7 @@
   CGFloat priceContainerWidth;
   
   NSInteger likesCount;
-  
+  int itemsQuantity;
   auth_Share *aSha;
   
   CGFloat _currentElementsYOffset;
@@ -181,7 +188,7 @@
     
     _tabBarIsHidden = YES;
     _showTabBar     = NO;
-    
+    itemsQuantity = 1;
     defaultItemImageViewFrame = (CGRect){
       0.0f,
       0.0f,
@@ -201,6 +208,7 @@
     _payPalManager = [[IBPPayPalManager alloc] init];
     _payPalManager.widgetId = _catalogueParams.widgetId;
     _buyNowSeparatorView = nil;
+    _itemsQuantity = nil;
     
     _thankYouPage = nil;
   }
@@ -216,6 +224,7 @@
   self.itemSKULabel = nil;
   self.itemDescriptionWebView = nil;
   self.itemPriceLabel = nil;
+  self.itemsQuantity = nil;
   
   self.itemImageSeparatorView = nil;
   self.priceContainerSeparatorView = nil;
@@ -392,6 +401,10 @@
   _scrollView.delegate = nil;
   _scrollView.userInteractionEnabled = YES;
   
+  [self.scrollView setUserInteractionEnabled:YES];
+  UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(oneTap:)];
+  [self.scrollView addGestureRecognizer:singleTap];
+  
   [self.view insertSubview:self.scrollView belowSubview:self.customNavBar];
 }
 
@@ -416,7 +429,9 @@
   }
   
   self.itemImageView.frame = itemImageViewFrame;
+  self.pageControl.frame = CGRectMake(0, self.itemImageView.frame.size.height, 320, 20);
   [self adjustSubviewsFramesDependingOnActualSizeOfItemImage];
+  
 }
 
 - (void)placeItemImageView
@@ -430,11 +445,124 @@
     //case for iba-like server where we have cropped images
     self.itemImageView.contentMode = UIViewContentModeScaleAspectFit;
   }
-  
   self.itemImageView.contentMode = UIViewContentModeScaleAspectFit;
-  self.itemImageView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
+//  self.itemImageView.contentMode = UIViewContentModeScaleToFill;//UIViewContentModeScaleAspectFill;//
+  self.itemImageView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;//UIViewAutoresizingFlexibleHeight;//
+ 
+  [self.itemImageView setUserInteractionEnabled:YES];
+  UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(oneTap2:)];
+  [self.itemImageView addGestureRecognizer:singleTap];
+  
+  self.pageControl = [[UIPageControl alloc] init];
+//  self.pageControl.frame = defaultItemImageViewFrame;
+  self.pageControl.backgroundColor=[UIColor blueColor];
+//  self.pageControl.frame = CGRectMake(0, self.itemImageView.frame.size.height, 320, 20);
+  self.pageControl.numberOfPages = 3;
+  self.pageControl.currentPage = 0;
+  [self.pageControl addTarget:self action:@selector(pageTurn:) forControlEvents:UIControlEventValueChanged];
+  self.pageControl.userInteractionEnabled = YES;
+  
+  UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipe:)];
+  swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
+  swipeLeft.cancelsTouchesInView = YES;
+  [self.itemImageView addGestureRecognizer:swipeLeft];
+  
+  UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipe:)];
+  swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
+  swipeRight.cancelsTouchesInView = YES;
+//  [self.scrollView setUserInteractionEnabled:NO];
+  [self.itemImageView addGestureRecognizer:swipeRight];
+//  self.scrollView.pagingEnabled = YES;
+  
   
   [self.scrollView addSubview:self.itemImageView];
+  
+//  [self.scrollView addSubview:self.pageControl];
+  
+  
+  
+ 
+}
+
+- (void)swipe:(UISwipeGestureRecognizer *)swipeRecogniser
+{
+  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ROFL"
+                                                  message:@"Dee dee doo doo."
+                                                 delegate:self
+                                        cancelButtonTitle:@"OK"
+                                        otherButtonTitles:nil];
+  [alert show];
+  
+  
+  if ([swipeRecogniser direction] == UISwipeGestureRecognizerDirectionLeft)
+  {
+    self.pageControl.currentPage -=1;
+    [self pageTurn:self.pageControl];
+  }
+  else if ([swipeRecogniser direction] == UISwipeGestureRecognizerDirectionRight)
+  {
+    self.pageControl.currentPage +=1;
+    [self pageTurn:self.pageControl];
+  }
+//  _dssview.image = [UIImage imageNamed:
+//                    [NSString stringWithFormat:@"%d.jpg",self.pageControl.currentPage]];
+}
+
+-(void)pageTurn:(UIPageControl *) page
+{
+  int c=page.currentPage;
+  if(c==0)
+  {
+    self.pageControl.backgroundColor=[UIColor blueColor];
+  }else if(c==1)
+  {
+    self.pageControl.backgroundColor=[UIColor redColor];
+  }else if(c==2)
+  {
+    self.pageControl.backgroundColor=[UIColor yellowColor];
+  }else if(c==3)
+  {
+    self.pageControl.backgroundColor=[UIColor greenColor];
+  }else if(c==4)
+  {
+    self.pageControl.backgroundColor=[UIColor grayColor];
+  }
+}
+
+-(void)oneTap2:(UITapGestureRecognizer*)recognizer
+{
+    //[[self view] endEditing:YES];
+  self.pageControl.currentPage += 1;
+  [self pageTurn:self.pageControl];
+    //    CGSize contentSize = self.scrollView.contentSize;
+    //  contentSize.height -= 162;//!!!
+    //  self.scrollView.contentSize = contentSize;
+}
+
+
+-(void)oneTap:(UITapGestureRecognizer*)recognizer
+{
+   [[self view] endEditing:YES];
+//    CGSize contentSize = self.scrollView.contentSize;
+//  contentSize.height -= 162;//!!!
+//  self.scrollView.contentSize = contentSize;
+}
+
+-(void)oneTap1:(UITapGestureRecognizer*)recognizer
+{
+  CGSize contentSize = self.scrollView.contentSize;
+  
+  /**
+   * As image can be downloaded asynchronously after the view appears,
+   * set new content size here.
+   */
+//  contentSize.height += offset;
+  contentSize.height += 162;//!!!
+  self.scrollView.contentSize = contentSize;
+  
+  CGPoint bottomOffset = CGPointMake(0, self.scrollView.contentSize.height - self.scrollView.bounds.size.height);
+  [self.scrollView setContentOffset:bottomOffset animated:YES];
+//  [[self view] endEditing:YES];
 }
 
 - (void)setupItemImageView
@@ -636,6 +764,7 @@
     
     if(self.catalogueItem.price.doubleValue > 0.0f){
       self.itemPriceLabel.text = self.catalogueItem.priceStr;
+      self.itemPriceLabel.text = [self.itemPriceLabel.text stringByReplacingOccurrencesOfString:@",00" withString:@""];
     }
     
     CGSize actualItemPriceLabelSize = [self.itemPriceLabel.text sizeForFont:self.itemPriceLabel.font
@@ -652,7 +781,18 @@
 
 - (void)placeShareButton
 {
-  if(!_shareButton){
+  NSString *enabledButtons = [[NSUserDefaults standardUserDefaults]
+                          stringForKey:@"enabled_buttons"];
+  bool hasSharing = true;
+  if (enabledButtons && enabledButtons.length > 0 && ([enabledButtons isEqualToString:@"0"] || [enabledButtons isEqualToString:@"00"] || [enabledButtons isEqualToString:@"01"]) ) {
+
+    hasSharing = false;
+  }
+  bool hasLikes = true;
+  if (enabledButtons && enabledButtons.length > 0 && ([enabledButtons isEqualToString:@"00"] || [enabledButtons isEqualToString:@"10"]) ) {
+    hasLikes = false;
+  }
+  if(!_shareButton && hasSharing){
     self.shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.shareButton.backgroundColor = [UIColor clearColor];
     [self.shareButton setImage:[UIImage imageNamed:resourceFromBundle(@"mCatalogue_ItemShare")] forState:UIControlStateNormal];
@@ -662,7 +802,7 @@
     
     CGFloat shareButtonOriginX;
     
-    if(self.likeButton.hidden){
+    if(self.likeButton.hidden || !hasLikes){
       shareButtonOriginX = priceContainerWidth - kShareButtonWidth;
     } else {
       shareButtonOriginX = CGRectGetMinX(self.likeButton.frame) - kSpaceBetweenShareAndLikeButtons - kShareButtonWidth;
@@ -681,7 +821,15 @@
 
 - (void)placeLikeButton
 {
-  if(!_likeButton){
+  NSString *enabledButtons = [[NSUserDefaults standardUserDefaults]
+                              stringForKey:@"enabled_buttons"];
+  bool hasLikes = true;
+  self.likeButton.hidden = NO;
+  if (enabledButtons && enabledButtons.length > 0 && ([enabledButtons isEqualToString:@"00"] || [enabledButtons isEqualToString:@"10"]) ) {
+    hasLikes = false;
+    self.likeButton.hidden = YES;
+  }
+  if(!_likeButton && hasLikes){
     
     CGRect likeImageViewFrame = (CGRect){
       0.0f, 0.0f, kLikeButtonLikeImageViewWidth, kLikeButtonLikeImageViewHeight
@@ -786,14 +934,18 @@
     if (_catalogueParams.cartEnabled)
     {
       self.buyNowOrAddToCartButton = [self makeAddToCartButton];
+      
+      [self placeQuantityField];
     }
     else if(_catalogueParams.payPalClientId.length)
     {
       self.buyNowOrAddToCartButton = [self makeBuyNowButton];
+      
     }
     
     if(self.buyNowOrAddToCartButton){
       [self.priceContainer addSubview:self.buyNowOrAddToCartButton];
+      
     }
   }
 }
@@ -878,6 +1030,79 @@
   return addToCartButton;
 }
 
+-(void)placeQuantityField
+{
+  self.itemsQuantity = [[mCatalogueTextField alloc] init];
+  self.itemsQuantity.frame = CGRectMake(self.buyNowOrAddToCartButton.frame.origin.x - 65,
+                                        self.buyNowOrAddToCartButton.frame.origin.y,
+                                        55,
+                                        self.buyNowOrAddToCartButton.frame.size.height);
+  self.itemsQuantity.placeholder              = @"1";
+  self.itemsQuantity.hidden = NO;
+  self.itemsQuantity.text                     = self.itemsQuantity.placeholder;
+  self.itemsQuantity.textColor                = [UIColor grayColor];//[[mCatalogueParameters sharedParameters] priceColor];
+  self.itemsQuantity.font                     = [UIFont systemFontOfSize:15.f];
+  self.itemsQuantity.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+  self.itemsQuantity.textAlignment            = NSTextAlignmentCenter;
+  self.itemsQuantity.backgroundColor          = [UIColor whiteColor];
+  self.itemsQuantity.contentInset             = UIEdgeInsetsMake(5.f, 5.f, 5.f, 5.f);
+  self.itemsQuantity.keyboardType             = UIKeyboardTypeNumberPad;
+  [[self.itemsQuantity layer] setCornerRadius:5.f];
+  [[self.itemsQuantity layer] setBorderColor:[UIColor grayColor].CGColor];
+  [[self.itemsQuantity layer] setBorderWidth:1.f];
+  [self.priceContainer addSubview:self.itemsQuantity];
+  
+  
+   [self.itemsQuantity addTarget:self action:@selector(textField1Active:) forControlEvents:UIControlEventEditingDidBegin];
+  [self.itemsQuantity addTarget:self action:@selector(textField1Active1:) forControlEvents:UIControlEventEditingDidEnd];
+  [self.itemsQuantity addTarget:self action:@selector(textField1Active2:) forControlEvents:UIControlEventEditingChanged];
+    //[self.itemsQuantity setUserInteractionEnabled:YES];
+//  UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(oneTap1:)];
+//  [self.itemsQuantity addGestureRecognizer:singleTap];
+//  self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width, self.scrollView.contentSize.height - 200);
+}
+
+-(void)textField1Active1:(UITapGestureRecognizer*)recognizer
+{
+  CGSize contentSize = self.scrollView.contentSize;
+  contentSize.height -= 162;//!!!
+  self.scrollView.contentSize = contentSize;
+}
+
+
+-(void)textField1Active2:(UITapGestureRecognizer*)recognizer
+{
+  int limit = 4;
+  if ([self.itemsQuantity.text length] > limit) {
+    self.itemsQuantity.text = [self.itemsQuantity.text substringToIndex:limit];
+    return;
+  }
+  CGFloat fixedWidth = self.itemsQuantity.frame.size.width;
+  CGSize newSize = [self.itemsQuantity sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
+  CGRect newFrame = self.itemsQuantity.frame;
+  newFrame = CGRectMake(self.itemsQuantity.frame.origin.x - fmaxf(newSize.width, fixedWidth) + fixedWidth, self.itemsQuantity.frame.origin.y, fmaxf(newSize.width, fixedWidth), self.itemsQuantity.frame.size.height);
+//  newFrame.size = CGSizeMake(fmaxf(newSize.width, fixedWidth), self.itemsQuantity.frame.size.height);
+  self.itemsQuantity.frame = newFrame;
+}
+
+
+-(void)textField1Active:(UITapGestureRecognizer*)recognizer
+{
+  CGSize contentSize = self.scrollView.contentSize;
+  
+  /**
+   * As image can be downloaded asynchronously after the view appears,
+   * set new content size here.
+   */
+    //  contentSize.height += offset;
+  contentSize.height += 162;//!!!
+  self.scrollView.contentSize = contentSize;
+  
+  CGPoint bottomOffset = CGPointMake(0, self.scrollView.contentSize.height - self.scrollView.bounds.size.height);
+  [self.scrollView setContentOffset:bottomOffset animated:YES];
+    //  [[self view] endEditing:YES];
+}
+
 -(void)placeBuyNowSeparatorView
 {
   if(self.buyNowSeparatorView == nil){
@@ -918,6 +1143,7 @@
    * set new content size here.
    */
     contentSize.height += offset;
+//  contentSize.height += 300;//!!!
     self.scrollView.contentSize = contentSize;
 }
 
@@ -1003,7 +1229,9 @@
 
 -(void)addToCart
 {
-  [self addCatalogueItemToCart:self.catalogueItem];
+  [[self view] endEditing:YES];
+  [self addCatalogueItemToCart:self.catalogueItem withQuantity:self.itemsQuantity.text.intValue];
+  
 }
 
 

@@ -47,6 +47,7 @@ categoryTitleColor,
 captionColor,
 descriptionColor,
 priceColor,
+enabledButtons,
 
 normalFormatDate,
 showLink,
@@ -260,6 +261,13 @@ dbManager = _dbManager;
   NSString *postLength = [NSString stringWithFormat:@"%lu", (unsigned long)[postBody length]];
   
   NSURL *endpointURL = [NSURL URLWithString:self.orderEndpointURL];
+  
+//  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ROFL"
+//                                                  message:self.orderEndpointURL
+//                                                 delegate:self
+//                                        cancelButtonTitle:@"OK"
+//                                        otherButtonTitles:nil];
+//  [alert show];
   
   NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
   [request setURL:endpointURL];

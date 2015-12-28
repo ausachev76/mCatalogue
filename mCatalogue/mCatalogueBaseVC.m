@@ -179,9 +179,17 @@
 }
 
 -(void)addCatalogueItemToCart:(mCatalogueItem *)item
-{
+{//adding many items
   [_catalogueParams.cart addCatalogueItem:item
                              withQuantity:1];
+  
+  [self showGotoCartPrompt];
+}
+
+-(void)addCatalogueItemToCart:(mCatalogueItem *)item withQuantity:(int)quantity
+{//adding many items
+  [_catalogueParams.cart addCatalogueItem:item
+                             withQuantity:quantity];
   
   [self showGotoCartPrompt];
 }

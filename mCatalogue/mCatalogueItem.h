@@ -66,6 +66,11 @@
 @property(nonatomic, strong) NSString *priceStr;
 
 /**
+ * Item old price as NSString
+ */
+@property(nonatomic, strong) NSString *oldPriceStr;
+
+/**
  * Currency code of item's price.
  */
 @property (nonatomic, readonly) NSString *currencyCode;

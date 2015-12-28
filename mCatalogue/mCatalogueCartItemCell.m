@@ -130,8 +130,11 @@
   }
   
   self.amountField.text      = item_.countAsString;
+  if ([item_.item.price isEqual:@0]) {
+    self.priceLabel.text = @"";
+  } else {
   self.priceLabel.text       = item_.item.priceStr;
-  
+  }
   self.containImage = YES;
   [self setThumbnailWithCatalogueCartItem:item_];
 }
@@ -216,6 +219,8 @@
                                             CGRectGetMaxY(self.textLabel.frame) + kCellTextLabelBottomMargin,
                                             expectedSize.width,
                                             expectedSize.height );
+    [[self.detailTextLabel layer] setBorderWidth:1.0f] ;
+    [[self.detailTextLabel layer] setBorderColor:[[UIColor whiteColor] CGColor]];
   }
   
   {

@@ -99,6 +99,11 @@
 -(void)addCatalogueItemToCart:(mCatalogueItem *)item;
 
 /**
+ * Point for adding multiple catalogue item to cart from any descdendant controller.
+ */
+-(void)addCatalogueItemToCart:(mCatalogueItem *)item withQuantity:(int)quantity;
+
+/**
  *  Remove all viewController's from stack with current VC
  *
  *  @param vcClass        View controller class name

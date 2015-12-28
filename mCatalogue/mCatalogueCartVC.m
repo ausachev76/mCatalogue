@@ -288,6 +288,13 @@
                                                    withCurrencyCode:self.catalogueParameters.currencyCode];
   
   orderView.priceLabel.text = strPrice;
+  self.confirmationManager.view.orderView.hidden = NO;
+  self.confirmationManager.view.orderView.totalLabel.hidden = NO;
+  self.confirmationManager.view.orderView.priceLabel.hidden = NO;
+  if ([self.cart.totalPrice  isEqual: @0]){
+    self.confirmationManager.view.orderView.totalLabel.hidden = YES;
+    self.confirmationManager.view.orderView.priceLabel.hidden = YES;
+  }
   
   [orderView setNeedsLayout];
 }

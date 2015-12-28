@@ -79,6 +79,11 @@ subcategories;
     
     for(mCatalogueItem *item in items){
       if (item.imgUrl && [item.imgUrl length]){
+        if(self.imgUrl != NULL && [self.imgUrl length]){
+          
+        } else {
+          self.imgUrl = item.imgUrl;
+        }
         self.showItemsImgs = YES;
         break;
       }

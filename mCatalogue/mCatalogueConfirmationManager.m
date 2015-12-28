@@ -631,7 +631,14 @@
                                       self.parameters.confirmInfo.title :
                                       NSBundleLocalizedString( @"mCatalogue_YOUR_ORDER_NUMBER", nil);
   summaryView.titleLabel.backgroundColor = [UIColor clearColor];
-  summaryView.titleLabel.text            = [titleStr stringByAppendingFormat:@" %ld", (long)orderNumber_ ];
+  
+  if ([titleStr containsString:@"{order}"]) {
+    summaryView.titleLabel.text = [titleStr stringByReplacingOccurrencesOfString:@"{order}" withString:[@"" stringByAppendingFormat:@"%ld", (long)orderNumber_ ]];
+  } else {
+    summaryView.titleLabel.text            = [titleStr stringByAppendingFormat:@" %ld", (long)orderNumber_ ];
+  }
+  
+  
   summaryView.titleLabel.font            = [UIFont boldSystemFontOfSize:18.f];
   summaryView.titleLabel.numberOfLines   = 0;
   summaryView.titleLabel.textAlignment   = NSTextAlignmentCenter;
@@ -643,6 +650,12 @@
   
   summaryView.subtitleLabel.backgroundColor = [UIColor clearColor];
   summaryView.subtitleLabel.text            = subTitleStr;
+  
+  
+  if ([subTitleStr containsString:@"{order}"]) {
+    summaryView.subtitleLabel.text = [subTitleStr stringByReplacingOccurrencesOfString:@"{order}" withString:[@"" stringByAppendingFormat:@"%ld", (long)orderNumber_ ]];
+  }
+  
   summaryView.subtitleLabel.font            = [UIFont systemFontOfSize:18.f];
   summaryView.subtitleLabel.numberOfLines   = 0;
   summaryView.subtitleLabel.textAlignment   = NSTextAlignmentCenter;

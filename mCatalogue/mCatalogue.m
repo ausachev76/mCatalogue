@@ -170,11 +170,63 @@ typedef struct{
 + (void)parseXML:(NSValue *)xmlElement_
       withParams:(NSMutableDictionary *)params_
 {
+  
+//  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+//  [request setHTTPMethod:@"GET"];
+//  [request setURL:[NSURL URLWithString:@"http://ibuilder.solovathost.com/test/data.catalog.xml"]];
+//  
+//  NSError *error = [[NSError alloc] init];
+//  NSHTTPURLResponse *responseCode = nil;
+//  
+//  NSData *oResponseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&responseCode error:&error];
+//  
+//  if([responseCode statusCode] != 200){
+//    NSLog(@"Error getting, HTTP status code %li", (long)[responseCode statusCode]);
+//  }
+//  NSString *s = [[NSString alloc] initWithData:oResponseData encoding:NSUTF8StringEncoding];
+//  NSLog(@"fuckin log %@", s);
+//  
+//  
+//  NSData *dat = [s dataUsingEncoding:NSUTF8StringEncoding];
+//  TBXML *tbxml = [[TBXML newTBXMLWithXMLData:dat
+//                                       error:nil ] autorelease];
+//
+//  TBXMLElement element;
+//  element = *[tbxml rootXMLElement];
+//
+//  
+//  TBXMLElement *configElement = [TBXML childElementNamed:@"config" parentElement:&element];
+//  
+//  
+//  NSMutableDictionary *catalogueParsedParameters = [NSMutableDictionary dictionary];
+//  
+//  [self parseParamsFromElement:configElement
+//                intoParameters:catalogueParsedParameters];
+//  
+//  [self parseColorskinFromElement:configElement
+//                   intoParameters:catalogueParsedParameters];
+//  
+//  [self parsePaymentDataFromElement:&element
+//                     intoParameters:catalogueParsedParameters];
+//  
+//  [self parseShoppingCartOptionsFromElement:configElement
+//                             intoParameters:catalogueParsedParameters];
+//  
+//  
+//  [params_ setObject:catalogueParsedParameters forKey:kCatalogueParsedParametersKey];
+//  
+//  BOOL dbIsReady = [self prepareDatabaseAtPath:[mCatalogueParameters dbFilePath:[params_ objectForKey:@"module_id"]]];
+//  
+//  if(dbIsReady){
+//    [self persistCatalogueContents:element];
+//  }
+
+  
   TBXMLElement element;
   [xmlElement_ getValue:&element];
-  
+
   TBXMLElement *configElement = [TBXML childElementNamed:@"config" parentElement:&element];
-  
+
   NSMutableDictionary *catalogueParsedParameters = [NSMutableDictionary dictionary];
   
   [self parseParamsFromElement:configElement
@@ -211,6 +263,7 @@ typedef struct{
                       @"app_name",
                       @"currency",
                       @"mainpagestyle",
+                      @"enabled_buttons",
                       @"showimages",
                       nil];
   
@@ -304,6 +357,32 @@ typedef struct{
 {
   mCatalogueUserProfile *userProfile = [mCatalogueUserProfile createWithXMLElement:[TBXML childElementNamed:@"orderform" parentElement:element]];
   mCatalogueConfirmInfo *confInfo = [mCatalogueConfirmInfo createWithXMLElement:[TBXML childElementNamed:@"orderconfirmation" parentElement:element]];
+  NSString *cartDescription = @"";
+  if ([TBXML childElementNamed:@"cartdescription" parentElement:element]) {
+     cartDescription = [TBXML textForElement:[TBXML childElementNamed:@"cartdescription" parentElement:element]];
+  }
+  
+  
+  NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+  
+  NSString *currentLevelKey = @"cartdescription";
+  
+
+  [preferences setObject:cartDescription forKey:currentLevelKey];
+  
+    //  Save to disk
+  const BOOL didSave = [preferences synchronize];
+  
+  if (!didSave)
+  {
+      //  Couldn't save (I've never seen this happen in real world testing)
+  }
+//  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ROFL"
+//                                                  message:cartDescription
+//                                                 delegate:self
+//                                        cancelButtonTitle:@"OK"
+//                                        otherButtonTitles:nil];
+//  [alert show];
   
   mCatalogueUserProfileItem *note = userProfile.note;
   
@@ -505,6 +584,7 @@ typedef struct{
   NSArray *itemTagList = @[@"itemname",
                            @"itemdescription",
                            @"itemprice",
+                           @"itemoldprice",
                            @"itemsku",
                            @"image",
                            @"image_res",
@@ -748,6 +828,11 @@ typedef struct{
   
   _catalogueParams.showImages = [[catalogueParsedParameters objectForKey:@"showimages"] isEqualToString:@"on"];
   _catalogueParams.isGrid = [[catalogueParsedParameters objectForKey:@"mainpagestyle"] isEqualToString:@"grid"];
+  _catalogueParams.enabledButtons = [catalogueParsedParameters objectForKey:@"enabled_buttons"];
+  NSString *s = [catalogueParsedParameters objectForKey:@"enabled_buttons"];
+
+  [[NSUserDefaults standardUserDefaults] setObject:s forKey:@"enabled_buttons"];
+  [[NSUserDefaults standardUserDefaults] synchronize];
   
   NSString *color1String = [catalogueParsedParameters objectForKey:@"color1"];
   
@@ -800,6 +885,18 @@ typedef struct{
   _catalogueParams.payPalClientId = payPalClientId;
   
   _catalogueParams.cartEnabled = [[catalogueParsedParameters objectForKey:@"cartEnabled"] integerValue]; //BOOL
+  
+  NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+  
+  NSString *cartEnabledKey = @"cartEnabled";
+  
+  const BOOL cartEnabled = _catalogueParams.cartEnabled;
+  [preferences setBool:cartEnabled forKey:cartEnabledKey];
+  
+    //  Save to disk
+  [preferences synchronize];
+  
+  
   _catalogueParams.checkoutEnabled = [[catalogueParsedParameters objectForKey:@"checkoutEnabled"] integerValue]; //BOOL
   
   if(_catalogueParams.cartEnabled && !_catalogueParams.checkoutEnabled){

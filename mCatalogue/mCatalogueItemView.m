@@ -44,7 +44,8 @@
 
 #define kPriceTextLabelFontSize_Row 14.0f//12.0f
 
-#define kItemDescriptionLabelFontSize_Row 13.0f
+#define kItemDescriptionLabelFontSize_Row 13.0f//13.0f
+#define kItemSKULabelFontSize_Row 11.0f
 #define kItemNameLabelFontSize_Row 14.0f
 
 #define kItemNameLabelMaxLines_Row 1
@@ -52,9 +53,9 @@
 #define kItemPriceLabelOriginY_Row 85.0f
 
 //Grid style specific values
-#define kTextBlockHeight_Grid 65.0f
+#define kTextBlockHeight_Grid 95.0f//80.0f// //65.0f//75.0f//
 #define kTextBlockWidth_Grid (kCatalogueItemCellWidth_Grid - kTextBlockMarginLeft_Grid - kTextBlockMarginRight_Grid)
-#define kTextBlockMarginTop_Grid 5.0f
+#define kTextBlockMarginTop_Grid 7.0f
 #define kTextBlockMarginLeft_Grid 6.0f
 #define kTextBlockMarginRight_Grid 6.0f
 
@@ -65,11 +66,11 @@
 #define kImageViewWidth_Grid kCatalogueItemCellWidth_Grid
 #define kImageViewHeight_Grid (kCatalogueItemCellHeight_Grid - kTextBlockHeight_Grid)
 
-#define kPriceTextLabelFontSize_Grid 12.0f//11.0f
+#define kPriceTextLabelFontSize_Grid 16.0f//12.0f//11.0f
 
-#define kItemDescriptionLabelFontSize_Grid 12.0f
+#define kItemDescriptionLabelFontSize_Grid 11.0f//12.0f
 
-#define kItemNameLabelFontSize_Grid 13.0f
+#define kItemNameLabelFontSize_Grid 11.0f//13.0f
 
 #define kSelfHeightGrowthWOPlaceholder_Grid 5.0f
 
@@ -84,6 +85,7 @@ static UIImage *itemImagePlaceholder = nil;
 @property (nonatomic, strong) UILabel *itemSKULabel;
 @property (nonatomic, strong) UILabel *itemDescriptionLabel;
 @property (nonatomic, strong) UILabel *itemPriceLabel;
+@property (nonatomic, strong) UILabel *itemOldPriceLabel;
 
 @property (nonatomic, strong) UIImageView *itemImageView;
 @property (nonatomic, strong) UIImageView *imageBackgroundView;
@@ -129,6 +131,7 @@ static UIImage *itemImagePlaceholder = nil;
   [self placeItemDescriptionLabel];
   
   [self placeItemPriceLabel];
+
   
   if ([mCatalogueParameters sharedParameters].cartEnabled)
   {
@@ -150,23 +153,55 @@ static UIImage *itemImagePlaceholder = nil;
 
     cellBounds = (CGRect){0.0f, 0.0f, kCatalogueItemCellWidth_Grid, kCatalogueItemCellHeight_Grid};
     
+    double size = kImageViewHeight_Grid;
+    
+    if ([mCatalogueParameters sharedParameters].cartEnabled || self.itemPriceLabel.text.length > 0) {
+      
+    } else{
+      self.itemPriceLabel.hidden = YES;
+      size += 15.0f;//30.0f;//
+    }
+    if (self.itemDescriptionLabel.text.length > 0) {
+      self.itemDescriptionLabel.hidden = NO;
+    } else{
+      self.itemDescriptionLabel.hidden = YES;
+      size += 15.0f;//30.0f;//
+    }
+    
     imageViewFrame = (CGRect){kDelimeterWidth,
-                              kDelimeterWidth,
-                              kImageViewWidth_Grid - 2*kDelimeterWidth,//4,
-                              kImageViewHeight_Grid - kDelimeterWidth};
+      kDelimeterWidth,
+      kImageViewWidth_Grid - 2*kDelimeterWidth,//4,
+      size - kDelimeterWidth};
     
     delimiterFrame = (CGRect){kDelimeterWidth,
-      kImageViewHeight_Grid,
+      size,
       kCatalogueItemCellWidth_Grid - 2*kDelimeterWidth,
       kDelimeterWidth
     };
     
     itemNameLabelFrame = (CGRect){
       kTextBlockMarginLeft_Grid,
-      kImageViewHeight_Grid + kTextBlockMarginTop_Grid - 2,
+      size + kTextBlockMarginTop_Grid - 2,
       kTextBlockWidth_Grid - 2,
       self.itemNameLabel.font.lineHeight
     };
+//    imageViewFrame = (CGRect){kDelimeterWidth,
+//                              kDelimeterWidth,
+//                              kImageViewWidth_Grid - 2*kDelimeterWidth,//4,
+//                              kImageViewHeight_Grid - kDelimeterWidth};
+//    
+//    delimiterFrame = (CGRect){kDelimeterWidth,
+//      kImageViewHeight_Grid,
+//      kCatalogueItemCellWidth_Grid - 2*kDelimeterWidth,
+//      kDelimeterWidth
+//    };
+//    
+//    itemNameLabelFrame = (CGRect){
+//      kTextBlockMarginLeft_Grid,
+//      kImageViewHeight_Grid + kTextBlockMarginTop_Grid - 2,
+//      kTextBlockWidth_Grid - 2,
+//      self.itemNameLabel.font.lineHeight
+//    };
 
   } else if(self.style == mCatalogueEntryViewStyleRow) {
     cellBounds = (CGRect){0.0f, 0.0f, kCatalogueItemCellWidth_Row, kCatalogueItemCellHeight_Row};
@@ -193,6 +228,7 @@ static UIImage *itemImagePlaceholder = nil;
   self.itemNameLabel.frame = itemNameLabelFrame;
   
   [self positionElements];
+//  [self placeItemOldPriceLabel];
   [self roundImageViewCorners];
   [self setupImageView];
 }
@@ -229,7 +265,7 @@ static UIImage *itemImagePlaceholder = nil;
   self.itemSKULabel.textColor = kItemDescriptionLabelTextColor;
   self.itemSKULabel.text = @"";
   self.itemSKULabel.adjustsFontSizeToFitWidth = NO;
-  self.itemSKULabel.font = [UIFont systemFontOfSize:kItemDescriptionLabelFontSize_Row];
+  self.itemSKULabel.font = [UIFont systemFontOfSize:kItemSKULabelFontSize_Row];
   
   [self addSubview:self.itemSKULabel];
 }
@@ -283,6 +319,33 @@ static UIImage *itemImagePlaceholder = nil;
   }
   
   [self addSubview:self.itemPriceLabel];
+}
+
+-(void)placeItemOldPriceLabel
+{
+  self.itemOldPriceLabel = [[[UILabel alloc] init] autorelease];
+  self.itemOldPriceLabel.frame = CGRectMake(self.itemPriceLabel.frame.origin.x - 2, self.itemPriceLabel.frame.origin.y + 15, 60, self.itemPriceLabel.frame.size.height);
+  self.itemOldPriceLabel.backgroundColor = self.backgroundColor;
+  self.itemOldPriceLabel.text = @"";
+  self.itemOldPriceLabel.textColor = kPriceLabelTextColor;
+  self.itemOldPriceLabel.adjustsFontSizeToFitWidth = NO;
+  self.itemOldPriceLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+  self.itemOldPriceLabel.textAlignment = NSTextAlignmentRight;
+  
+  if(self.style == mCatalogueEntryViewStyleGrid){
+    
+    self.itemOldPriceLabel.numberOfLines = 1;
+    self.itemOldPriceLabel.textAlignment = NSTextAlignmentRight;
+    self.itemOldPriceLabel.font = [UIFont systemFontOfSize:kPriceTextLabelFontSize_Grid];
+    
+    
+  } else if(self.style == mCatalogueEntryViewStyleRow) {
+    
+    self.itemOldPriceLabel.font = [UIFont systemFontOfSize:kPriceTextLabelFontSize_Row];
+    
+  }
+  self.itemOldPriceLabel.hidden = NO;
+  [self addSubview:self.itemOldPriceLabel];
 }
 
 -(void)placeCartButton
@@ -341,27 +404,64 @@ static UIImage *itemImagePlaceholder = nil;
 -(void)positionElements
 {
   if(self.style == mCatalogueEntryViewStyleGrid){
-    CGSize textBlockSize = (CGSize){kTextBlockWidth_Grid, kTextBlockHeight_Grid};
+    double size = kTextBlockHeight_Grid;
+    if ([mCatalogueParameters sharedParameters].cartEnabled || self.itemPriceLabel.text.length > 0) {
+      
+    } else{
+      self.itemPriceLabel.hidden = YES;
+      size -= 15.0f;//30.0f;//
+    }
+    if (self.itemDescriptionLabel.text.length > 0) {
+      self.itemDescriptionLabel.hidden = NO;
+      size += 15.0f;
+    } else{
+      self.itemDescriptionLabel.hidden = YES;
+      size -= 30.0f;//15.0f;//
+    }
+    
+    CGSize textBlockSize = (CGSize){kTextBlockWidth_Grid, size};
     
     CGSize priceLabelSize = [[self.itemPriceLabel text] sizeForFont:self.itemPriceLabel.font
                                                           limitSize:textBlockSize
                                                     nslineBreakMode:self.itemPriceLabel.lineBreakMode];
-    
+
     CGRect itemDescriptionLabelFrame = (CGRect){kTextBlockMarginLeft_Grid,
-      kImageViewHeight_Grid + self.itemNameLabel.frame.size.height + kTextBlockMarginTop_Grid,
+      kImageViewHeight_Grid + self.itemNameLabel.frame.size.height + kTextBlockMarginTop_Grid + 15 + 15,
       kTextBlockWidth_Grid - kTextBlockMarginRight_Grid,
       ceilf(self.itemDescriptionLabel.font.lineHeight)
     };
+//    CGRect itemDescriptionLabelFrame = (CGRect){kTextBlockMarginLeft_Grid,
+//      kImageViewHeight_Grid + self.itemNameLabel.frame.size.height + kTextBlockMarginTop_Grid,
+//      kTextBlockWidth_Grid - kTextBlockMarginRight_Grid,
+//      ceilf(self.itemDescriptionLabel.font.lineHeight)
+//    };
+    int i = 15;
+    i = self.itemDescriptionLabel.text.length > 0 ? 30 : 15;
     
+    
+    CGRect itemSKULabelFrame = (CGRect){kTextBlockMarginLeft_Grid,
+      kImageViewHeight_Grid + self.itemNameLabel.frame.size.height + kTextBlockMarginTop_Grid + i,
+      kTextBlockWidth_Grid - kTextBlockMarginRight_Grid,
+      ceilf(self.itemDescriptionLabel.font.lineHeight)
+    };
+
     CGRect priceLabelFrame = (CGRect){
       kTextBlockMarginLeft_Grid,
-      CGRectGetMaxY(itemDescriptionLabelFrame) + 5,
+      self.cartButton.frame.origin.y + 12,
       priceLabelSize.width,
       ceilf(self.itemPriceLabel.font.lineHeight)
     };
+//    CGRect priceLabelFrame = (CGRect){
+//      kTextBlockMarginLeft_Grid,
+//      CGRectGetMaxY(itemDescriptionLabelFrame) + 5,
+//      priceLabelSize.width,
+//      ceilf(self.itemPriceLabel.font.lineHeight)
+//    };
+    
     
     self.itemPriceLabel.frame = priceLabelFrame;
     self.itemDescriptionLabel.frame = itemDescriptionLabelFrame;
+    self.itemSKULabel.frame = itemSKULabelFrame;
     
   } else if (self.style == mCatalogueEntryViewStyleRow){
     CGFloat lastElemMaxYCoord = 0;
@@ -504,6 +604,18 @@ static UIImage *itemImagePlaceholder = nil;
     
     if(self.catalogueItem.price.doubleValue > 0.0f){
       self.itemPriceLabel.text = self.catalogueItem.priceStr;
+      self.itemPriceLabel.text = [self.itemPriceLabel.text stringByReplacingOccurrencesOfString:@",00" withString:@""];
+      double sum = self.catalogueItem.price.doubleValue + 10.0f;
+      NSDecimalNumber *dec = [NSDecimalNumber decimalNumberWithDecimal:[[NSNumber numberWithDouble:sum] decimalValue]];
+      NSString *oldPriceS = [mCatalogueItem formattedPriceStringForPrice:dec withCurrencyCode:self.catalogueItem.currencyCode];
+//      self.itemOldPriceLabel.text = self.catalogueItem.priceStr;
+      NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:oldPriceS];///*self.catalogueItem.oldPriceStr*/@"RUR10.00"];
+      [attributeString addAttribute:NSStrikethroughStyleAttributeName
+                              value:@2
+                              range:NSMakeRange(0, [attributeString length])];
+      self.itemOldPriceLabel.textColor = [UIColor grayColor];
+      self.itemOldPriceLabel.textAlignment = NSTextAlignmentRight;
+      [self.itemOldPriceLabel setAttributedText:attributeString];
     }
     
     [self positionElements];

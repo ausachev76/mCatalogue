@@ -24,6 +24,7 @@
 #define mCatalogueItemDescriptionKey @"itemdescription"
 #define mCatalogueItemSKUKey @"itemsku"
 #define mCatalogueItemPriceKey @"itemprice"
+#define mCatalogueItemOldPriceStrKey @"itemoldprice"
 #define mCatalogueItemPriceStrKey @"itemprice_str"
 
 #define mCatalogueItemImgUrlKey @"image"
@@ -67,9 +68,19 @@
     self.descriptionPlainText = [self.description htmlToNewLinePreservingText];
     
     self.priceStr = [itemDict objectForKey:mCatalogueItemPriceKey];
+    self.oldPriceStr = [itemDict objectForKey:mCatalogueItemOldPriceStrKey];
     
     if(self.priceStr.length){
-      self.price = [NSDecimalNumber decimalNumberWithString:self.priceStr];
+      NSCharacterSet *s = [NSCharacterSet characterSetWithCharactersInString:@"абвгдежзлийклмнопрстуфхцчшщъыьэюяАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_ "];
+      NSRange r = [self.priceStr rangeOfCharacterFromSet:s];
+      if (r.location == NSNotFound) {
+        self.price = [NSDecimalNumber decimalNumberWithString:self.priceStr];
+      } else {
+        self.price = [NSDecimalNumber decimalNumberWithString:@"0"];
+      }
+        //self.price = [NSDecimalNumber decimalNumberWithString:self.priceStr];//[NSDecimalNumber decimalNumberWithString:self.priceStr];
+//        self.price = [NSDecimalNumber decimalNumberWithString:@"0"];
+      
     } else {
       self.price = [NSDecimalNumber decimalNumberWithString:@"0"];
     }
@@ -90,6 +101,7 @@
   self.description = nil,
   self.descriptionPlainText = nil,
   self.priceStr = nil,
+  self.oldPriceStr = nil,
   self.thumbnailUrl = nil,
   self.thumbnailUrlRes = nil;
   self.priceStr = nil;

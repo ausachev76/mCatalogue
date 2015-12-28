@@ -219,7 +219,26 @@
   UIImage *searchIcon = [UIImage imageNamed:resourceFromBundle(@"mCatalogue_search")];
   UIImageView *searchIconImageView = [[[UIImageView alloc] initWithImage:searchIcon] autorelease];
   
-  CGRect searchIconFrame = (CGRect){searchIconOriginX, 0.0f, kSearchIconWidth, kSearchIconWidth};
+  int space = 0;
+  
+  NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+  
+  NSString *cartEnabledKey = @"currentlevel";
+  
+  if ([preferences objectForKey:cartEnabledKey] == nil)
+  {
+      //  Doesn't exist.
+  }
+  else
+  {
+      //  Get current level
+    const BOOL cartEnabled = [preferences integerForKey:cartEnabledKey];
+    if (cartEnabled) {
+      space = 20;
+    }
+  }
+  
+  CGRect searchIconFrame = (CGRect){searchIconOriginX + space, 0.0f, kSearchIconWidth, kSearchIconWidth};
   searchIconImageView.frame = searchIconFrame;
   searchIconImageView.center = (CGPoint){(int)searchIconImageView.center.x, (int)(kToolbarHeight/2)};
   

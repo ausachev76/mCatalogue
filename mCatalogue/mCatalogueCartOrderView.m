@@ -28,6 +28,7 @@ totalLabel = _totalLabel,
 separatorColor = _separatorColor,
 priceLabel = _priceLabel;
 
+
 -(id)init
 {
   self = [super init];
@@ -80,10 +81,34 @@ priceLabel = _priceLabel;
   
   UIEdgeInsets contentMargin = [mCatalogueCartItemCell contentMargin];
   
-  CGRect contentFrm = CGRectMake(self.bounds.origin.x + contentMargin.left,
+  NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+  
+  NSString *currentLevelKey = @"cartdescription";
+  
+  NSString *s = @"";
+  
+  if ([preferences objectForKey:currentLevelKey] == nil)
+  {
+      //  Doesn't exist.
+  }
+  else
+  {
+      //  Get current level
+    const NSString *cartdescription = [preferences stringForKey:currentLevelKey];
+    s = [NSString stringWithFormat:@"%@", cartdescription];
+  }
+  CGRect contentFrm;
+  if (s.length > 0) {
+   contentFrm = CGRectMake(self.bounds.origin.x + contentMargin.left,
                                  self.bounds.origin.y + contentMargin.top,
                                  self.bounds.size.width - (contentMargin.left + contentMargin.right),
-                                 self.bounds.size.height - (contentMargin.top + contentMargin.bottom) );
+                                 self.bounds.size.height - (contentMargin.top + contentMargin.bottom) + 101);
+  } else {
+     contentFrm = CGRectMake(self.bounds.origin.x + contentMargin.left,
+                                   self.bounds.origin.y + contentMargin.top,
+                                   self.bounds.size.width - (contentMargin.left + contentMargin.right),
+                                   self.bounds.size.height - (contentMargin.top + contentMargin.bottom));
+  }
   
   CGFloat totalStringHeight = ceilf( MAX( self.priceLabel.font.lineHeight, self.totalLabel.font.lineHeight ) );
   
@@ -108,9 +133,44 @@ priceLabel = _priceLabel;
                                      totalStringHeight );
   }
 
-  CGRect rc = self.frame;
-  rc.size.height = CGRectGetMaxY(self.totalLabel.frame) + contentMargin.bottom;// + 16.0f;
-  self.frame = rc;
+  
+  self.descriptionWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 41, 320, 70)];
+  NSString *url=@"http://www.google.com";
+  NSURL *nsurl=[NSURL URLWithString:url];
+  NSURLRequest *nsrequest=[NSURLRequest requestWithURL:nsurl];
+  
+  
+  
+
+  
+  if (s.length > 0) {
+    UIView *palka = [[UIView alloc] initWithFrame:CGRectMake(0, 40.5f, 320, 0.5f)];
+    palka.backgroundColor = [UIColor lightGrayColor];//[UIColor colorWithCGColor:self.separatorColor.CGColor];
+    [self addSubview:palka];
+    
+    [self.descriptionWebView loadHTMLString:s baseURL:nil];
+//    [[[self.descriptionWebView subviews] lastObject] setScrollingEnabled:NO];
+    [self addSubview:_descriptionWebView];
+    
+    CGRect rc = self.frame;
+    rc.size.height = CGRectGetMaxY(self.totalLabel.frame) + contentMargin.bottom + 71;// + 16.0f;
+    self.frame = rc;
+  } else {
+  
+    CGRect rc = self.frame;
+    rc.size.height = CGRectGetMaxY(self.totalLabel.frame) + contentMargin.bottom;// + 16.0f;
+    self.frame = rc;
+  }
+  
+  
+//  [self.descriptionWebView loadRequest:nsrequest];
+//  [self.descriptionWebView loadHTMLString:@"<html><head></head><body>Заказы принимаются только от оптовых клиентов, по розничным заказам обращаться <a href=\"ibuildappmarket://?app=2\" title=\"сюда\" target=\"\">сюда</a><br></body></html>" baseURL:nil];
+//  [[[UIWebView subviews] lastObject] setScrollingEnabled:NO];
+
+  
+//  CGRect rc = self.frame;
+//  rc.size.height = CGRectGetMaxY(self.totalLabel.frame) + contentMargin.bottom + 71;// + 16.0f;
+//  self.frame = rc;
 }
 
 -(CGFloat)marginBottom
