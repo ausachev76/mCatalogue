@@ -12,7 +12,7 @@
 #import "mCatalogueSearchBarView.h"
 #import "NSString+size.h"
 #import "UIColor+HSL.h"
-#import "iphone/iphmasterviewcontroller.h"
+//#import "iphone/iphmasterviewcontroller.h"
 
 @interface mCatalogueSearchBarView()
 {
@@ -414,7 +414,9 @@
 
 - (void) hamburgerPressed
 {
-  [[CIphoneMasterViewController appHomeScreenVC] toggleSideBar];
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"moduleHamburgerPressed"
+                                                      object:nil];
+  //[[CIphoneMasterViewController appHomeScreenVC] toggleSideBar];
 }
 
 - (void) searchIconTapped
