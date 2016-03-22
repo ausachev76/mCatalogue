@@ -14,9 +14,9 @@
 #import "mCatalogueItem.h"
 #import "mCatalogueParameters.h"
 
-#import <FacebookSDK/FacebookSDK.h>
-#import <FHSTwitterEngine/FHSTwitterEngine.h>
-#import <auth_Share/auth_Share.h>
+//#import <FacebookSDK/FacebookSDK.h>
+//#import "FHSTwitterEngine.h"//#import <FHSTwitterEngine/FHSTwitterEngine.h>
+#import "auth_Share.h"//#import <auth_Share/auth_Share.h>
 
 #import "mCatalogueSearchBarView.h"
 

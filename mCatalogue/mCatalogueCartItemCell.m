@@ -15,7 +15,7 @@
 #import "UIButton+Extensions.h"
 #import "mCatalogueItem.h"
 #import "UIColor+HSL.h"
-#import <SDWebImage/UIImageView+WebCache.h>
+#import "UIImageView+WebCache.h"//<SDWebImage/UIImageView+WebCache.h>
 
 #define kCellContentLeftMargin   10.f
 #define kCellContentRightMargin  10.f

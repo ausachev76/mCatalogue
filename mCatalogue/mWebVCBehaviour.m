@@ -9,29 +9,15 @@
  *                                                                           *
  ****************************************************************************/
 
+#import "mWebVCBehaviour.h"
 
+@implementation mWebVCBehaviour
 
-#import <UIKit/UIKit.h>
-#import "IBSideBarModuleAction.h"//#import "IBSideBar/IBSideBarModuleAction.h"
-
-extern NSString *const mCatalogueCartButtonCartCountNotification;
-
-/**
- *  Customized UILabel for shopping cart rounded corner labels
- */
-@interface mCatalogueCartRoundedCornerLabel : UILabel
-  @property(nonatomic, strong) UIColor *borderColor;
-  @property(nonatomic, assign) CGFloat  borderWidth;
-@end
-
-/**
- *  Customized UIButton for widget mCatalogueCart
- */
-@interface mCatalogueCartButton : UIButton
-  @property(nonatomic, readonly) mCatalogueCartRoundedCornerLabel *countLabel;
-  @property(nonatomic, assign  ) NSUInteger                        count;
-  @property(nonatomic, readonly) IBSideBarModuleAction            *sideBarModuleAction;
-
-  -(id)initWithFrame:(CGRect)frame;
+- (BOOL)           webView:(UIWebView *)webView
+shouldStartLoadWithRequest:(NSURLRequest *)request
+            navigationType:(UIWebViewNavigationType)navigationType
+{
+  return YES;
+}
 
 @end

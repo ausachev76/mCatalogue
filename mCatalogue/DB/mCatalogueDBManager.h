@@ -9,7 +9,7 @@
  *                                                                           *
  ****************************************************************************/
 
-#import <SQLiteManager.h>
+#import "SQLiteManager.h"//<SQLiteManager.h>
 #import "mCatalogueCart.h"
 
 @class mCatalogueItem;

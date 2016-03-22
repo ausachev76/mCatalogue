@@ -22,14 +22,14 @@
 #import "mCatalogueCartAlertView.h"
 #import "IBPlaceHolderTextView.h"
 
-#import "UIView+findFirstResponder.h"
+//#import "UIView+findFirstResponder.h"
 
 #import "UIColor+HSL.h"
 
-#import <SBJson.h>
-#import <MBProgressHUD.h>
+#import "SBJson.h"//<SBJson.h>
+//#import "MBProgressHUD.h"//<MBProgressHUD.h>
 
-#import "IBPayments/IBPPayPalManager.h"
+#import "IBPPayPalManager.h"//"IBPayments/IBPPayPalManager.h"
 
 #import "mCatalogueThankYouPageVC.h"
 

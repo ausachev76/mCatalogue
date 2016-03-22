@@ -21,7 +21,7 @@
 #import "NRLabel.h"
 #import "mCatalogueCart+priceWidth.h"
 
-#import "UIButton+Extensions.h"
+//#import "UIButton+Extensions.h"
 
 #define kCellHeightPhone 100.f
 

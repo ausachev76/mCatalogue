@@ -9,7 +9,7 @@
  *                                                                           *
  ****************************************************************************/
 
-#import "NRGridViewCell.h"
+//#import "NRGridViewCell.h"
 #import "mCatalogueItem.h"
 #import "mCatalogueEntryView.h"
 

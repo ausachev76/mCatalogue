@@ -109,3 +109,6 @@
 
 "mCatalogue_SideBarCartActionLabel" = "Корзина";
 "mCatalogue_SKU"   = "Артикул";
+
+/* Sent from iBuildApp */
+"mWeb_sentFromiBuildApp" = "Опубликовано через iBuildApp";

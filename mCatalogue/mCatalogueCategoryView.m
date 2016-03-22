@@ -10,7 +10,7 @@
  ****************************************************************************/
 
 #import "mCatalogueCategoryView.h"
-#import <SDWebImage/UIImageView+WebCache.h>
+#import "UIImageView+WebCache.h"//<SDWebImage/UIImageView+WebCache.h>
 #import "NSString+size.h"
 
 //Style-agnostic values
