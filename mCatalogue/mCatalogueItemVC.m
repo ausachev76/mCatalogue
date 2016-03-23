@@ -11,20 +11,20 @@
 
 #import "mCatalogueItemVC.h"
 #import "reachability.h"
-#import "appconfig.h"
+#import "appbuilderappconfig.h"
 
-#import <MBProgressHUD/MBProgressHUD.h>
+//#import "MBProgressHUD.h"//<MBProgressHUD/MBProgressHUD.h>
 
-#import <SDWebImage/UIImageView+WebCache.h>
+//#import "UIImageView+WebCache.h"//<SDWebImage/UIImageView+WebCache.h>
 
-#import <FacebookSDK/FacebookSDK.h>
+//#import <FacebookSDK/FacebookSDK.h>
 
 #import "NSString+size.h"
 #import "NSString+html.h"
 
-#import "navigationcontroller.h"
-#import "iphnavbardata.h"
-#import "labelwidget.h"
+//#import "navigationcontroller.h"
+//#import "iphnavbardata.h"
+//#import "labelwidget.h"
 
 #import "userconfig.h"
 
@@ -32,8 +32,8 @@
 
 #import "UIColor+RGB.h"
 
-#import "IBPayments/IBPPayPalManager.h"
-#import "IBPayments/IBPItem.h"
+#import "IBPPayPalManager.h"//"IBPayments/IBPPayPalManager.h"
+//#import "IBPItem.h"//"IBPayments/IBPItem.h"
 
 #import "mCatalogueThankYouPageVC.h"
 

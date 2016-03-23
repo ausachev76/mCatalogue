@@ -1,7 +1,7 @@
 #ifdef __OBJC__
   #import <Foundation/Foundation.h>
   #import <Smartling.i18n/SLLocalization.h>
-  #import <MBProgressHUD/MBProgressHUD.h>
+  #import "MBProgressHUD.h"//#import <MBProgressHUD/MBProgressHUD.h>
   #import "NSString+size.h"
 
   #define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)

@@ -110,3 +110,6 @@
 
 "mCatalogue_SideBarCartActionLabel" = "Cart";
 "mCatalogue_SKU"   = "SKU";
+
+/* Sent from iBuildApp */
+"mWeb_sentFromiBuildApp" = "Sent from iBuildApp";

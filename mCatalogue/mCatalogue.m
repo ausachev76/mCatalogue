@@ -18,8 +18,8 @@
 #import "UIImageView+WebCache.h"
 #import "SDImageCache.h"
 
-#import "NRGridView.h"
-#import "customgridcell.h"
+//#import "NRGridView.h"
+//#import "customgridcell.h"
 #import "NSString+size.h"
 #import "NSString+html.h"
 
@@ -27,7 +27,7 @@
 #import "mCatalogueCategory.h"
 #import "mCatalogueItem.h"
 #import "mCatalogueItemVC.h"
-#import "gradientselection.h"
+//#import "gradientselection.h"
 
 #import "mCatalogueDBManager.h"
 
@@ -40,17 +40,17 @@
 #import "mCatalogueGridCell.h"
 #import "mCatalogueRowCell.h"
 
-#import "navigationcontroller.h"
-#import "labelwidget.h"
+//#import "navigationcontroller.h"
+//#import "labelwidget.h"
 
-#import "reachability.h"
+//#import "reachability.h"
 
-#import "IBPayments/IBPCart.h"
-#import "IBPayments/IBPCartItem.h"
-#import "IBPayments/IBPPayPalManager.h"
-#import "iphmainviewcontroller.h"
+//#import "IBPCart.h"//"IBPayments/IBPCart.h"
+//#import "IBPCartItem.h"//"IBPayments/IBPCartItem.h"
+#import "IBPPayPalManager.h"//"IBPayments/IBPPayPalManager.h"
+//#import "iphmainviewcontroller.h"
 
-#import "IBSideBar/IBSideBarModuleAction.h"
+//#import "IBSideBarModuleAction.h"//"IBSideBar/IBSideBarModuleAction.h"
 
 /*
  * Beware of big xml configs (several Mbs) causing app crashes.

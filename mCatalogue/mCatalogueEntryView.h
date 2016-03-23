@@ -9,8 +9,8 @@
  *                                                                           *
  ****************************************************************************/
 
-#import "NRGridViewCell.h"
-#import <SDWebImage/UIImageView+WebCache.h>
+//#import "NRGridViewCell.h"
+#import "UIImageView+WebCache.h"//#import <SDWebImage/UIImageView+WebCache.h>
 #import "mCatalogueParameters.h"
 
 #define kCatalogueCellImageViewFadeInDuration 0.3f
