@@ -1,0 +1,44 @@
+<data>
+  <config>
+    <currency><![CDATA[USD]]></currency>
+    <mainpagestyle><![CDATA[list]]></mainpagestyle>
+    <colorskin>
+      <color1><![CDATA[#cd3b2f]]></color1>
+      <color2><![CDATA[#ffedad]]></color2>
+      <color3><![CDATA[#ffffff]]></color3>
+      <color4><![CDATA[#ffffff]]></color4>
+      <color5><![CDATA[#ffedad]]></color5>
+      <color6><![CDATA[rgba(0,0,0,0.2)]]></color6>
+      <color7><![CDATA[rgba(0,0,0,0.15)]]></color7>
+      <color8><![CDATA[rgba(0,0,0,0.3)]]></color8>
+      <isLight><![CDATA[0]]></isLight>
+    </colorskin>
+  </config>
+  <categories>
+    <category id="428243" parentid="0" valid="1" order="0" visible="1">
+      <categoryname><![CDATA[Directory]]></categoryname>
+      <categoryimg><![CDATA[]]></categoryimg>
+      <categoryimg_res><![CDATA[]]></categoryimg_res>
+    </category>
+  </categories>
+  <items>
+    <item id="1" pid="1906094" categoryid="428243" valid="1" order="0" visible="1">
+      <itemname><![CDATA[Account Executive]]></itemname>
+      <itemdescription><![CDATA[<font size="5"><b>Responsibilities & Project Work:</b></font><br><br><ul style="margin: 15px 0 0 20px; list-style: disc"><br><li><font size="3">Prospecting for new business relationships</font></li><li><font size="3">Conducting market research and evaluating advertiser selection criteria to identify potential new partnerships</font></li><li><font size="3">Estimating potential financial impact of new advertising opportunities. Summarizing and presenting benefits of strategic partnership to prospects</font></li><br></ul>]]></itemdescription>
+      <itemprice><![CDATA[]]></itemprice>
+      <image><![CDATA[http://ibuildapp.s3-website-us-east-1.amazonaws.com/assets/data/01664/1664868/apps/2083805/20593079/1401965690.jpg]]></image>
+      <image_res><![CDATA[]]></image_res>
+      <thumbnail><![CDATA[http://ibuildapp.com/getimage.php?width=150&height=180&url=http://ibuildapp.s3-website-us-east-1.amazonaws.com/assets/data/01664/1664868/apps/2083805/20593079/1401965690.jpg]]></thumbnail>
+      <thumbnail_res><![CDATA[]]></thumbnail_res>
+    </item>
+    <item id="2" pid="1906095" categoryid="428243" valid="1" order="1" visible="1">
+      <itemname><![CDATA[Payroll Manager]]></itemname>
+      <itemdescription><![CDATA[<font size="5"><b>Experiences/Qualifications:</b></font><br><br><ul style="margin: 15px 0 0 20px; list-style: disc"><br><li><font size="3">Bachelorâs Degree in Accounting, Finance, or related field, preferred</font></li><li><font size="3">7-10+ years hands on payroll experience with third-party payroll processing US employees in a high-growth public company, international payroll a plus</font></li><li><font size="3">Strong understanding of payroll processing procedures and wage and hour compliance</font></li><br></ul>]]></itemdescription>
+      <itemprice><![CDATA[]]></itemprice>
+      <image><![CDATA[http://ibuildapp.s3-website-us-east-1.amazonaws.com/assets/data/01664/1664868/apps/2083805/20593079/1401965727.jpg]]></image>
+      <image_res><![CDATA[]]></image_res>
+      <thumbnail><![CDATA[http://ibuildapp.com/getimage.php?width=150&height=180&url=http://ibuildapp.s3-website-us-east-1.amazonaws.com/assets/data/01664/1664868/apps/2083805/20593079/1401965727.jpg]]></thumbnail>
+      <thumbnail_res><![CDATA[]]></thumbnail_res>
+    </item>
+  </items>
+</data>
