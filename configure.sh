@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"
 
 HOST_APP_REPO_NAME=ios_hostapp
-HOST_APP_REPO_URL="git@office.solovathost.com:ios/$HOST_APP_REPO_NAME.git"
+HOST_APP_REPO_URL="https://github.com/ausachev76/$HOST_APP_REPO_NAME.git"
 MAIN_SCRIPT="$HOST_APP_REPO_NAME/configure_module.sh"
 
 if [ ! -x "$MAIN_SCRIPT" ]; then
